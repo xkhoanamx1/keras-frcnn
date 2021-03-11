@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+#from cv2 import IMREAD_GRAYSCALE
 
 def get_data(input_path):
 	found_bg = False
@@ -31,9 +32,12 @@ def get_data(input_path):
 				class_mapping[class_name] = len(class_mapping)
 
 			if filename not in all_imgs:
-				all_imgs[filename] = {}
 				
+				all_imgs[filename] = {}
+				print(filename)
 				img = cv2.imread(filename)
+				print(img)
+				
 				(rows,cols) = img.shape[:2]
 				all_imgs[filename]['filepath'] = filename
 				all_imgs[filename]['width'] = cols

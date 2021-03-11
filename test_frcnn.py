@@ -151,7 +151,7 @@ all_imgs = []
 
 classes = {}
 
-bbox_threshold = 0.8
+bbox_threshold = 0.06666666666666
 
 visualise = True
 
@@ -205,6 +205,7 @@ for idx, img_name in enumerate(sorted(os.listdir(img_path))):
 				continue
 
 			cls_name = class_mapping[np.argmax(P_cls[0, ii, :])]
+				
 
 			if cls_name not in bboxes:
 				bboxes[cls_name] = []
@@ -222,6 +223,7 @@ for idx, img_name in enumerate(sorted(os.listdir(img_path))):
 				x, y, w, h = roi_helpers.apply_regr(x, y, w, h, tx, ty, tw, th)
 			except:
 				pass
+
 			bboxes[cls_name].append([C.rpn_stride*x, C.rpn_stride*y, C.rpn_stride*(x+w), C.rpn_stride*(y+h)])
 			probs[cls_name].append(np.max(P_cls[0, ii, :]))
 
@@ -248,9 +250,13 @@ for idx, img_name in enumerate(sorted(os.listdir(img_path))):
 			cv2.rectangle(img, (textOrg[0] - 5,textOrg[1]+baseLine - 5), (textOrg[0]+retval[0] + 5, textOrg[1]-retval[1] - 5), (255, 255, 255), -1)
 			cv2.putText(img, textLabel, textOrg, cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 0), 1)
 
-	print(f'Elapsed time = {time.time() - st)}'
-	print(all_dets)
+	#print(f'Elapsed time = {time.time() - st)}'
+	#print(all_dets)
 
 	
-	cv2.imwrite('./results_imgs-fp-mappen-test/{}.png'.format(os.path.splitext(str(img_name))[0]),img)
+	cv2.imwrite('./results_imgs-fp-mappen-test/{}.jpeg'.format(os.path.splitext(str(img_name))[0]),img)
+	
+	
+
+	
 

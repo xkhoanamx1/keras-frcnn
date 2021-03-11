@@ -30,14 +30,14 @@ parser.add_option("--hf", dest="horizontal_flips", help="Augment with horizontal
 parser.add_option("--vf", dest="vertical_flips", help="Augment with vertical flips in training. (Default=false).", action="store_true", default=False)
 parser.add_option("--rot", "--rot_90", dest="rot_90", help="Augment with 90 degree rotations in training. (Default=false).",
 				  action="store_true", default=False)
-parser.add_option("--num_epochs", type="int", dest="num_epochs", help="Number of epochs.", default=2000)
+parser.add_option("--num_epochs", type="int", dest="num_epochs", help="Number of epochs.", default=1) 
 parser.add_option("--config_filename", dest="config_filename", help=
 				"Location to store all the metadata related to the training (to be used when testing).",
 				default="config.pickle")
 parser.add_option("--output_weight_path", dest="output_weight_path", help="Output path for weights.", default='./model_frcnn.hdf5')
 parser.add_option("--input_weight_path", dest="input_weight_path", help="Input path for weights. If not specified, will try to load default weights provided by keras.")
 
-(options, args) = parser.parse_args()
+(options, args) = parser.parse_args()    
 
 if not options.train_path:   # if filename is not given
 	parser.error('Error: path to training data must be specified. Pass --path to command line')
@@ -57,7 +57,7 @@ C.use_vertical_flips = bool(options.vertical_flips)
 C.rot_90 = bool(options.rot_90)
 
 C.model_path = options.output_weight_path
-model_path_regex = re.match("^(.+)(\.hdf5)$", C.model_path)
+model_path_regex = re.match(r"^(.+)(\.hdf5)$", C.model_path)
 if model_path_regex.group(2) != '.hdf5':
 	print('Output weights must have .hdf5 filetype')
 	exit(1)
@@ -81,8 +81,8 @@ else:
 	# set the path to weights based on backend and model
 	C.base_net_weights = nn.get_weight_path()
 
-train_imgs, classes_count, class_mapping = get_data(options.train_path, 'trainval')
-val_imgs, _, _ = get_data(options.train_path, 'test')
+train_imgs, classes_count, class_mapping = get_data(options.train_path)
+val_imgs, _, _ = get_data(options.train_path)
 
 if 'bg' not in classes_count:
 	classes_count['bg'] = 0
@@ -109,8 +109,8 @@ num_imgs = len(train_imgs)
 #train_imgs = [s for s in all_imgs if s['imageset'] == 'trainval']
 #val_imgs = [s for s in all_imgs if s['imageset'] == 'test']
 
-print(f'Num train samples {len(train_imgs}')
-print(f'Num val samples {len(val_imgs)}')
+#print(f'Num train samples {len(train_imgs}')
+#print(f'Num val samples {len(val_imgs)}')
 
 
 data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, C, nn.get_img_output_length, K.common.image_dim_ordering(), mode='train')
@@ -153,7 +153,7 @@ model_rpn.compile(optimizer=optimizer, loss=[losses.rpn_loss_cls(num_anchors), l
 model_classifier.compile(optimizer=optimizer_classifier, loss=[losses.class_loss_cls, losses.class_loss_regr(len(classes_count)-1)], metrics={f'dense_class_{len(classes_count)}': 'accuracy'})
 model_all.compile(optimizer='sgd', loss='mae')
 
-epoch_length = 1000
+epoch_length = 2000
 num_epochs = int(options.num_epochs)
 iter_num = 0
 
@@ -260,13 +260,14 @@ for epoch_num in range(num_epochs):
 				rpn_accuracy_for_epoch = []
 
 				if C.verbose:
-					print(f'Mean number of bounding boxes from RPN overlapping ground truth boxes: {mean_overlapping_boxes}')
-					print(f'Classifier accuracy for bounding boxes from RPN: {class_acc}')
-					print(f'Loss RPN classifier: {loss_rpn_cls}')
-					print(f'Loss RPN regression: {loss_rpn_regr}')
-					print(f'Loss Detector classifier: {loss_class_cls}')
-					print(f'Loss Detector regression: {loss_class_regr}')
-					print(f'Elapsed time: {time.time() - start_time}')
+					#print(f"Mean number of bounding boxes from RPN overlapping ground truth boxes: {mean_overlapping_boxes}"")
+					#print(f'Classifier accuracy for bounding boxes from RPN: {class_acc}')
+					#print(f'Loss RPN classifier: {loss_rpn_cls}')
+					#print(f'Loss RPN regression: {loss_rpn_regr}')
+					#print(f'Loss Detector classifier: {loss_class_cls}')
+					#print(f'Loss Detector regression: {loss_class_regr}')
+					#print(f'Elapsed time: {time.time() - start_time}')
+					print("here")
 
 				curr_loss = loss_rpn_cls + loss_rpn_regr + loss_class_cls + loss_class_regr
 				iter_num = 0

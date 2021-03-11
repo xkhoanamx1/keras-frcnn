@@ -1,0 +1,6 @@
+h5py
+tensorflow==1.13.2
+Keras==2.0.3
+numpy
+opencv-python
+sklearn
